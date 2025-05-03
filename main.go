@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 var version = "(unknown)"
@@ -46,61 +47,67 @@ func main() {
 	}
 
 	options.Run(func(plugin *protogen.Plugin) error {
-		for _, file := range plugin.Files {
-			if !file.Generate {
-				continue
-			}
+		plugin.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 
-			config := Config{
-				SourcePath:    file.Desc.Path(),
-				ProtocVersion: protocVersion(plugin),
-				PluginVersion: version,
-				GoPackageName: string(file.GoPackageName),
-				Services:      []Service{},
-			}
+		return run(plugin)
+	})
+}
 
-			for _, service := range file.Services {
-				serviceTemplate := Service{
-					Name:    service.GoName,
-					Methods: []Method{},
-				}
-
-				for _, method := range service.Methods {
-					output := Output{
-						Name:   method.Output.GoIdent.GoName,
-						Fields: []string{},
-					}
-
-					for _, field := range method.Output.Fields {
-						output.Fields = append(output.Fields, field.GoName)
-					}
-
-					methodTemplate := Method{
-						Name:   method.GoName,
-						Input:  method.Input.GoIdent.GoName,
-						Output: output,
-					}
-
-					serviceTemplate.Methods = append(serviceTemplate.Methods, methodTemplate)
-				}
-
-				config.Services = append(config.Services, serviceTemplate)
-			}
-
-			fileTemplate, err := template.New("main").Parse(mainTemplate)
-			if err != nil {
-				panic(err)
-			}
-
-			genFile := plugin.NewGeneratedFile(file.GeneratedFilenamePrefix+"_random.pb.go", file.GoImportPath)
-
-			if err := fileTemplate.ExecuteTemplate(genFile, "main", config); err != nil {
-				panic(err)
-			}
+func run(plugin *protogen.Plugin) error {
+	for _, file := range plugin.Files {
+		if !file.Generate {
+			continue
 		}
 
-		return nil
-	})
+		config := Config{
+			SourcePath:    file.Desc.Path(),
+			ProtocVersion: protocVersion(plugin),
+			PluginVersion: version,
+			GoPackageName: string(file.GoPackageName),
+			Services:      []Service{},
+		}
+
+		for _, service := range file.Services {
+			serviceTemplate := Service{
+				Name:    service.GoName,
+				Methods: []Method{},
+			}
+
+			for _, method := range service.Methods {
+				output := Output{
+					Name:   method.Output.GoIdent.GoName,
+					Fields: []string{},
+				}
+
+				for _, field := range method.Output.Fields {
+					output.Fields = append(output.Fields, field.GoName)
+				}
+
+				methodTemplate := Method{
+					Name:   method.GoName,
+					Input:  method.Input.GoIdent.GoName,
+					Output: output,
+				}
+
+				serviceTemplate.Methods = append(serviceTemplate.Methods, methodTemplate)
+			}
+
+			config.Services = append(config.Services, serviceTemplate)
+		}
+
+		fileTemplate, err := template.New("main").Parse(mainTemplate)
+		if err != nil {
+			return fmt.Errorf("parsing template: %w", err)
+		}
+
+		genFile := plugin.NewGeneratedFile(file.GeneratedFilenamePrefix+"_random.pb.go", file.GoImportPath)
+
+		if err := fileTemplate.ExecuteTemplate(genFile, "main", config); err != nil {
+			return fmt.Errorf("executing template: %w", err)
+		}
+	}
+
+	return nil
 }
 
 func protocVersion(gen *protogen.Plugin) string {
