@@ -30,7 +30,12 @@ type Service struct {
 type Method struct {
 	Name   string
 	Input  string
-	Output string
+	Output Output
+}
+
+type Output struct {
+	Name   string
+	Fields []string
 }
 
 func main() {
@@ -61,10 +66,19 @@ func main() {
 				}
 
 				for _, method := range service.Methods {
+					output := Output{
+						Name:   method.Output.GoIdent.GoName,
+						Fields: []string{},
+					}
+
+					for _, field := range method.Output.Fields {
+						output.Fields = append(output.Fields, field.GoName)
+					}
+
 					methodTemplate := Method{
 						Name:   method.GoName,
 						Input:  method.Input.GoIdent.GoName,
-						Output: method.Output.GoIdent.GoName,
+						Output: output,
 					}
 
 					serviceTemplate.Methods = append(serviceTemplate.Methods, methodTemplate)

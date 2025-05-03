@@ -6,12 +6,12 @@
 
 package {{ .GoPackageName }}
 
-{{ if .Services }}import (
+import (
     "context"
     "math/rand"
     "testing/quick"
-	"reflect"
-){{ end }}
+    "reflect"
+)
 
 {{ range $service := .Services }}
 type {{ .Name }}RandomServer struct {
@@ -20,10 +20,19 @@ type {{ .Name }}RandomServer struct {
 }
 
 {{ range .Methods }}
-func (r *{{ $service.Name }}RandomServer) {{.Name}}(ctx context.Context, _ *{{ .Input }}) (out *{{ .Output }}, err error) {
-    value, _ := quick.Value(reflect.TypeOf(out), r.Rand)
+func (r *{{ $service.Name }}RandomServer) {{.Name}}(ctx context.Context, _ *{{ .Input }}) (*{{ .Output.Name }}, error) {
+    out := &{{ .Output.Name }}{}
 
-	return value.Interface().(*{{ .Output }}), nil
+    {{ range $field := .Output.Fields }}
+    randValue(&out.{{ $field }}, r.Rand)
+    {{ end }}
+
+	return out, nil
 }
 {{ end }}
 {{ end }}
+
+func randValue[T any](out *T, r *rand.Rand) {
+	v, _ := quick.Value(reflect.ValueOf(*out).Type(), r)
+	*out = v.Interface().(T)
+}

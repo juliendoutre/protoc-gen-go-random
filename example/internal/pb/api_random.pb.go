@@ -18,8 +18,15 @@ type HelloWorldRandomServer struct {
 	Rand *rand.Rand
 }
 
-func (r *HelloWorldRandomServer) Greet(ctx context.Context, _ *GreetRequest) (out *GreetResponse, err error) {
-	value, _ := quick.Value(reflect.TypeOf(out), r.Rand)
+func (r *HelloWorldRandomServer) Greet(ctx context.Context, _ *GreetRequest) (*GreetResponse, error) {
+	out := &GreetResponse{}
 
-	return value.Interface().(*GreetResponse), nil
+	randValue(&out.Greeting, r.Rand)
+
+	return out, nil
+}
+
+func randValue[T any](out *T, r *rand.Rand) {
+	v, _ := quick.Value(reflect.ValueOf(*out).Type(), r)
+	*out = v.Interface().(T)
 }

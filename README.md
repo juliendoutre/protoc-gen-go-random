@@ -13,6 +13,9 @@ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 ```shell
 go install .
 protoc ./example/api.proto --go_out=./example/ --go-grpc_out=./example/ --go-random_out=./example/
+cd example
+go run .
+grpcurl -plaintext localhost:8000 HelloWorld/Greet
 ```
 
 ## References

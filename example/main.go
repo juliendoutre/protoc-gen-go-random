@@ -10,6 +10,7 @@ import (
 
 	"github.com/juliendoutre/protoc-gen-go-random/example/internal/pb"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -26,6 +27,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
+	reflection.Register(grpcServer)
 	pb.RegisterHelloWorldServer(grpcServer, randomServer)
 	grpcServer.Serve(lis)
 }
