@@ -3,16 +3,23 @@
 ## Getting started
 
 ```shell
-# Install dependencies
+brew tap juliendoutre/protoc-gen-go-random https://github.com/juliendoutre/protoc-gen-go-random
+brew install protoc-gen-go-random
+```
+
+## Usage
+
+```shell
 brew install protobuf
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-# Install the plugin
-brew tap juliendoutre/protoc-gen-go-random https://github.com/juliendoutre/protoc-gen-go-random
-brew install protoc-gen-go-random
-# Run the example
-cd example
-go run .
+protoc ./example/api.proto --go_out=./example/ --go-grpc_out=./example/ --go-random_out=./example/
+```
+
+## Run the example
+
+```shell
+cd example && go run .
 # In another shell
 grpcurl -plaintext localhost:8000 HelloWorld/Greet
 ```

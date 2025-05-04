@@ -60,6 +60,3 @@ brews:
         branch: main
   directory: Formula
   url_template: "https://github.com/juliendoutre/protoc-gen-go-random/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-  dependencies:
-    - name: mkcert
-      version: 1.4.4
