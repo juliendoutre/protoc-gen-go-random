@@ -5,22 +5,20 @@
 class ProtocGenGoRandom < Formula
   desc ""
   homepage ""
-  version "0.2.0"
-
-  depends_on "mkcert" => "1.4.4"
+  version "0.3.0"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/juliendoutre/protoc-gen-go-random/releases/download/v0.2.0/protoc-gen-go-random_Darwin_x86_64.tar.gz"
-      sha256 "813fa0fa53ac1163493bfbdf762826afa0982a2350bf9dd909517c9b4f71d45f"
+      url "https://github.com/juliendoutre/protoc-gen-go-random/releases/download/v0.3.0/protoc-gen-go-random_Darwin_x86_64.tar.gz"
+      sha256 "2d61bd5268b8d5dd13fb95aabf8f3373e9155dae1715684fb55784dd0a1d6e1b"
 
       def install
         bin.install "protoc-gen-go-random"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/juliendoutre/protoc-gen-go-random/releases/download/v0.2.0/protoc-gen-go-random_Darwin_arm64.tar.gz"
-      sha256 "2d2f5a00a8006954d28968a71448354e4b8c38e89efe7327622cb8e4990ed671"
+      url "https://github.com/juliendoutre/protoc-gen-go-random/releases/download/v0.3.0/protoc-gen-go-random_Darwin_arm64.tar.gz"
+      sha256 "d029810cbed827b5ba66341b0eb8387a6351fdf12f81bef79c021b6cd51dea39"
 
       def install
         bin.install "protoc-gen-go-random"
@@ -31,8 +29,8 @@ class ProtocGenGoRandom < Formula
   on_linux do
     if Hardware::CPU.intel?
       if Hardware::CPU.is_64_bit?
-        url "https://github.com/juliendoutre/protoc-gen-go-random/releases/download/v0.2.0/protoc-gen-go-random_Linux_x86_64.tar.gz"
-        sha256 "570a90e2391e2dfb9afb1a857c682172a918ed343572fc2e7bc5f45316543b9f"
+        url "https://github.com/juliendoutre/protoc-gen-go-random/releases/download/v0.3.0/protoc-gen-go-random_Linux_x86_64.tar.gz"
+        sha256 "5a3c336dcd3d22f15a5a45af8c81959980c8b7eb9c086adb3f4253f420ba3dfa"
 
         def install
           bin.install "protoc-gen-go-random"
@@ -41,8 +39,8 @@ class ProtocGenGoRandom < Formula
     end
     if Hardware::CPU.arm?
       if Hardware::CPU.is_64_bit?
-        url "https://github.com/juliendoutre/protoc-gen-go-random/releases/download/v0.2.0/protoc-gen-go-random_Linux_arm64.tar.gz"
-        sha256 "3a838922adca67a1a0e40bcbddd569c5537cfacfe03f5246da9262ed90851e27"
+        url "https://github.com/juliendoutre/protoc-gen-go-random/releases/download/v0.3.0/protoc-gen-go-random_Linux_arm64.tar.gz"
+        sha256 "bb596d26b8f294f541eb5006333ed2ab7bf1eade0eb3a15f8d8ac1557ac75c08"
 
         def install
           bin.install "protoc-gen-go-random"
